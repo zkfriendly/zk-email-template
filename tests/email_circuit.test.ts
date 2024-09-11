@@ -4,7 +4,7 @@ import circuits from "../circuits.json";
 import { getEmailSender, getInputs } from "../inputs/email_circuit/generate";
 import { promisify } from "util";
 import fs from "fs";
-import { calculateEmailAddrCommit, calculateTxBodyHash } from "./common/utils";
+import { calculateEmailAddrCommit } from "./common/utils";
 import { assert } from "@zk-email/helpers";
 
 describe("EmailCircuit", () => {
@@ -43,14 +43,14 @@ describe("EmailCircuit", () => {
 
     const expectedOutput = {
       userOpHash: BigInt(0),
-      emailCommitment: BigInt(0),
+      emailCommitment: await calculateEmailAddrCommit("", senderEmail),
       pubkeyHash:
         6632353713085157925504008443078919716322386156160602218536961028046468237192n,
     };
 
     const witness = await circuit.calculateWitness(circuitInput);
 
-    console.log(witness)
+    console.log(JSON.stringify(witness, null, 2));
 
     assert(witness[1] == expectedOutput.userOpHash, "userOpHash mismatch");
     assert(

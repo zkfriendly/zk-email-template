@@ -1,10 +1,11 @@
-
 pragma circom 2.1.5;
 
 include "@zk-email/circuits/email-verifier.circom";
 include "@zk-email/circuits/utils/constants.circom";
+include "@zk-email/circuits/utils/bytes.circom";
 include "@zk-email/circuits/utils/regex.circom";
 include "@zk-email/zk-regex-circom/circuits/common/from_addr_regex.circom";
+include "./utils/commit.circom";
 
 // Verify email from user (sender) and extract subject, timestmap, recipient email (commitment), etc.
 // * n - the number of bits in each chunk of the RSA public key (modulust)
@@ -40,4 +41,11 @@ template EmailCircuit(n, k, maxHeaderBytes, txBodyMaxBytes) {
     fromRegexOut === 1;
     signal senderEmailAddr[EMAIL_ADDR_MAX_BYTES()];
     senderEmailAddr <== SelectRegexReveal(maxHeaderBytes, EMAIL_ADDR_MAX_BYTES())(fromRegexReveal, senderEmailIdx);
+    
+    var numEmailAddrInts = computeIntChunkLength(EMAIL_ADDR_MAX_BYTES());
+    signal senderEmailAddrInts[numEmailAddrInts] <== PackBytes(EMAIL_ADDR_MAX_BYTES())(senderEmailAddr);
+    component emailAddrCommit = EmailAddrCommit(numEmailAddrInts);
+    emailAddrCommit.rand <== accountCode;
+    emailAddrCommit.email_addr_ints <== senderEmailAddrInts;
+    emailCommitment <== emailAddrCommit.commit;
 }
