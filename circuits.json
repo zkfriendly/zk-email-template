@@ -1,0 +1,7 @@
+{
+  "email_circuit": {
+    "file": "email_circuit",
+    "template": "EmailCircuit",
+    "params": [121, 17, 1024, 512]
+  }
+}
