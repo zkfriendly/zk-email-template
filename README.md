@@ -1,57 +1,90 @@
+# Minimal ZK Email Circuit Integration
 
-## CLI Usage
+This project serves as a template for integrating ZK Email circuits. It provides a minimal setup for compiling, proving, and testing ZK circuits for email verification.
 
-```sh
-npx circomkit compile <circuit_name>
+## Prerequisites
 
-# print circuit info if you want to
-npx circomkit info <circuit_name>
-```
+- Node.js (v14 or later)
+- npm or yarn
+- Circom (must be installed separately)
 
-3. Commence circuit-specific setup. Normally, this requires us to download a Phase-1 PTAU file and provide it's path; however, Circomkit can determine the required PTAU and download it automatically when using `bn128` curve, thanks to [Perpetual Powers of Tau](https://github.com/privacy-scaling-explorations/perpetualpowersoftau). In this case, `sudoku_9x9` circuit has 4617 constraints, so Circomkit will download `powersOfTau28_hez_final_13.ptau` (see [here](https://github.com/iden3/snarkjs#7-prepare-phase-2)).
+## Setup
 
-```sh
-npx circomkit setup <circuit_name>
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   # or
+   yarn install
+   ```
 
-# alternative: provide the PTAU yourself
-npx circomkit setup <circuit_name> <path-to-ptau>
-```
+## Key Commands
 
-4. Prepare your input file under `./inputs/<circuit_name>/default.json`.
+- **Generate inputs**: 
+  ```
+  npm run gen
+  # or
+  yarn gen
+  ```
+- **Compile circuits**: 
+  ```
+  npm run compile
+  # or
+  yarn compile
+  ```
+- **Setup**: 
+  ```
+  npm run setup
+  # or
+  yarn setup
+  ```
+- **Generate verification key**: 
+  ```
+  npm run vkey
+  # or
+  yarn vkey
+  ```
+- **Generate proof**: 
+  ```
+  npm run prove
+  # or
+  yarn prove
+  ```
+- **Run tests**: 
+  ```
+  npm test
+  # or
+  yarn test
+  ```
 
-5. We are ready to create a proof!
+## Project Structure
 
-```sh
-npx circomkit prove <circuit_name> default
-```
+- `circuits/`: Contains Circom circuit definitions, including the email circuit
+- `inputs/`: Input generation scripts for the circuits
+- `tests/`: Test files for the circuits, including email circuit tests
 
-6. We can then verify our proof. You can try and modify the public input at `./build/<circuit_name>/default/public.json` and see if the proof verifies or not!
+## Email Circuit
 
-```sh
-npx circomkit verify <circuit_name> default
-```
+The email circuit in this project is designed to verify email properties and generate an email commitment. Here's a brief overview:
 
+- Located in: `circuits/email_circuit.circom`
+- Main components:
+  - Email header verification
+  - Sender email extraction and commitment
+  - Public key verification
+- Outputs:
+  - `userOpHash`: A hash representing the user operation that we are assuming this circuit is intended to prove(set to 0 in this example)
+  - `emailCommitment`: A commitment to the sender's email address
+  - `pubkeyHash`: Hash of the public key used for signature verification
 
-## Configuration
+The email commitment is a crucial output that allows for privacy-preserving verification of the sender's email address. It's calculated using a combination of the sender's email address and a salt, then hashed using the Poseidon hash function.
 
-Circomkit checks for `circomkit.json` to override it's default configurations. We could for example change the target version, prime field and the proof system by setting `circomkit.json` to be:
+## Notes
 
-```json
-{
-  "version": "2.1.2",
-  "protocol": "plonk",
-  "prime": "bls12381"
-}
-```
+- This project uses Circomkit for circuit compilation and proof generation.
+- The `NODE_OPTIONS=--max_old_space_size=8192` is set for memory-intensive operations.
+- Ensure that Circom is properly installed and accessible in your system's PATH before running the commands.
 
-## Testing
+## License
 
-You can use the following commands to test the circuits:
-
-```sh
-# test everything
-yarn test
-
-# test a specific circuit
-yarn test -g <circuit-name>
-```
+MIT

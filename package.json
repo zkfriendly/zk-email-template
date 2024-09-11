@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "description": "Tx Auth",
+  "description": "Email Circuit",
   "scripts": {
     "start": "npx ts-node ./src/index.ts",
     "gen": "npx ts-node ./inputs/generator.ts",
