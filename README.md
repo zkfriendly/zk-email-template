@@ -1,6 +1,6 @@
 # Minimal ZK Email Circuit Integration
 
-This project serves as a template for integrating ZK Email circuits. It provides a minimal setup for compiling, proving, and testing ZK circuits for email verification.
+This project serves as a template for integrating ZK Email circuits. It provides a minimal setup for compiling, proving, and testing ZK circuits for email verification using circomkit.
 
 ## Prerequisites
 
